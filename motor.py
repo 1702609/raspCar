@@ -11,25 +11,43 @@ GPIO.setup(23,GPIO.OUT)
 
 print('Starting motor sequence!')
 
-while True:
-  try:
-    # Makes the motor spin one way for 3 seconds
-    GPIO.output(17, True)
+def backward():
+    GPIO.output(17, True) 
     GPIO.output(18, False)
     GPIO.output(22, True)
     GPIO.output(23, False)
-    time.sleep(3)
-    # Spins the other way for a further 3 seconds
+    time.sleep(1.5) # Go forward for 3 seconds
+    GPIO.output(17, False) # Stops the wheel
+    GPIO.output(22, False) # Stops the wheel
+
+def forward():
     GPIO.output(17, False)
     GPIO.output(18, True)
     GPIO.output(22, False)
     GPIO.output(23, True)
-    time.sleep(3)
-  except(KeyboardInterrupt):
-    # If a keyboard interrupt is detected then it exits cleanly!
-    print('Finishing up!')
-    GPIO.output(17, False)
+    time.sleep(1.5) # Go backward for 3 seconds
+    GPIO.output(18, False) # Stops the wheel
+    GPIO.output(23, False) # Stops the wheel
+
+def left():
+    GPIO.output(17, False) 
+    GPIO.output(18, True)
+    time.sleep(0.6)
     GPIO.output(18, False)
+    
+def right():
     GPIO.output(22, False)
+    GPIO.output(23, True)
+    time.sleep(0.6)
     GPIO.output(23, False)
-    quit()
+
+while True:
+  direction = input("Where do you wanna go? ")
+  if direction == 'forward':
+      forward()
+  elif direction == 'left':
+      left()
+  elif direction == 'right':
+      right()
+  else: 
+      backward()

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <com.example.clientblue.StickyButton
+        android:id="@+id/button_start_server"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start server"
+        android:onClick="startServer"/>
+
+    <Button
+        android:id="@+id/button_clear_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/button_start_server"
+        android:text="Clear log"
+        android:onClick="clearLog"/>
+
+    <ScrollView
+        android:id="@+id/scrollview_output"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/button_clear_text"
+        android:layout_marginTop="2dp">
+
+        <TextView
+            android:id="@+id/textview_output"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dip" />
+    </ScrollView>
+
+    <View android:id="@+id/strut"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_centerHorizontal="true"/>
+
+    <EditText
+        android:layout_margin="10dp"
+        android:id="@+id/userInput"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@id/strut"
+        android:layout_alignParentLeft="true"
+        android:hint="Enter command here"
+        android:layout_alignParentBottom="true"/>
+
+    <Button
+        android:layout_margin="10dp"
+        android:id="@+id/submit_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/strut"
+        android:layout_alignParentRight="true"
+        android:text="Send"
+        android:layout_alignParentBottom="true"
+        android:onClick="sendMessage"/>
+
+</RelativeLayout>
