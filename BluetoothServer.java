@@ -40,24 +40,7 @@ public class BluetoothServer {
         // read string from spp client
         InputStream inStream = connection.openInputStream();
         BufferedReader bReader = new BufferedReader(new InputStreamReader(inStream));
-        new java.util.Timer().schedule( 
-                new java.util.TimerTask() {
-                @Override
-                public void run() 
-                    {
-                    try {
-                        lineRead = bReader.readLine();
-                        } 
-                    catch (IOException e) 
-                        {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                        }
-                    }
-                }, 
-                5000 
-        );
-    
+        lineRead = bReader.readLine();
         System.out.println("Message from mobile device: "+lineRead);
         // send response to spp client
         OutputStream outStream = connection.openOutputStream();
