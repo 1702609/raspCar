@@ -124,7 +124,7 @@ public class BluetoothClientActivity extends Activity {
 
 	public void sendMessage(View v)
 		{
-		String command = userInput.getText().toString();
+		String command = userInput.getText().toString()+"\n"; // '\n' is needed because readline() works only if there is a next line
 		Log.i("Send",command);
 		MESSAGE = command;
 		new BluetoothRequestTask(this, mDevice).execute(MESSAGE);
