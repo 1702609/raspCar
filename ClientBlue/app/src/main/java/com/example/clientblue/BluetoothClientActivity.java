@@ -1,5 +1,5 @@
 package com.example.clientblue;
-
+// contains two classes - BluetoothClientActivity and BluetoothRequestTask
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,13 +44,11 @@ public class BluetoothClientActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-
-		mLogTextView = (TextView) findViewById(R.id.textview_output);
-		mScrollView = (ScrollView) findViewById(R.id.scrollview_output);
-		mStartButton = (StickyButton) findViewById(R.id.button_start_server);
-		userInput = (EditText) findViewById(R.id.userInput);
-
-		mClearTextButton = (Button) findViewById(R.id.button_clear_text);
+		mLogTextView = findViewById(R.id.textview_output);
+		mScrollView = findViewById(R.id.scrollview_output);
+		mStartButton = findViewById(R.id.button_start_server);
+		userInput = findViewById(R.id.userInput);
+		mClearTextButton = findViewById(R.id.button_clear_text);
 
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
 			mAdapter = BluetoothAdapter.getDefaultAdapter();
