@@ -16,7 +16,7 @@ import javax.microedition.io.StreamConnection;
 import javax.microedition.io.StreamConnectionNotifier;
 
 public class BluetoothServer {
-    private static final String RESPONSE = "I am the motor";
+    private static String RESPONSE = "";
     private static String lineRead = "";
 
     // start server
@@ -42,17 +42,24 @@ public class BluetoothServer {
         BufferedReader bReader = new BufferedReader(new InputStreamReader(inStream));
         lineRead = bReader.readLine();
         System.out.println("Message from mobile device: "+lineRead);
+        
+        Process p = Runtime.getRuntime().exec("python motor.py " +lineRead);
+        InputStream stdIn = p.getInputStream();
+        InputStreamReader isr = new InputStreamReader(stdIn);
+        BufferedReader br = new BufferedReader(isr);
+	
+        String pythonMsg = null;
+        while ((pythonMsg = br.readLine()) != null)
+        System.out.println("The response is "+pythonMsg);
+
         // send response to spp client
         OutputStream outStream = connection.openOutputStream();
         PrintWriter pWriter = new PrintWriter(new OutputStreamWriter(outStream));
         System.out.println("Sending response (" + RESPONSE + ")");
         pWriter.write(RESPONSE + "\r\n");
         pWriter.flush();
-
         pWriter.close();
-
         streamConnNotifier.close();
-        Process p = Runtime.getRuntime().exec("python motor.py");
         
     }
 

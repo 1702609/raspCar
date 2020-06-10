@@ -9,7 +9,6 @@ GPIO.setup(18,GPIO.OUT)
 GPIO.setup(22,GPIO.OUT)
 GPIO.setup(23,GPIO.OUT)
 
-print('Starting motor sequence!')
 
 def backward():
     GPIO.output(17, True) 
@@ -41,13 +40,26 @@ def right():
     time.sleep(0.6)
     GPIO.output(23, False)
 
-while True:
-  direction = input("Where do you wanna go? ")
-  if direction == 'forward':
-      forward()
-  elif direction == 'left':
-      left()
-  elif direction == 'right':
-      right()
-  else: 
-      backward()
+
+
+def main(direction):
+    print("The arguement is "+direction)
+    if direction == "f":
+        print("Going forward")
+        forward()
+    elif direction == "l":
+        print("Going left")
+        left()
+    elif direction == "r":
+        print("Going right")
+        right()
+    elif direction == "b": 
+        print("Going backwards")
+        backward()
+    else:
+        print("I do not understand")
+      
+
+if __name__ == '__main__':
+    import sys
+    sys.exit(main(sys.argv[1]))
