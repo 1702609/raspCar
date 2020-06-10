@@ -43,7 +43,6 @@ def right():
 
 
 def main(direction):
-    print("The arguement is "+direction)
     if direction == "f":
         print("Going forward")
         forward()

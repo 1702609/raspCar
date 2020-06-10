@@ -1,5 +1,3 @@
- 
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,8 +14,8 @@ import javax.microedition.io.StreamConnection;
 import javax.microedition.io.StreamConnectionNotifier;
 
 public class BluetoothServer {
-    private static String RESPONSE = "";
     private static String lineRead = "";
+    private static String pythonMsg = null;
 
     // start server
     private void startServer() throws IOException {
@@ -48,19 +46,17 @@ public class BluetoothServer {
         InputStreamReader isr = new InputStreamReader(stdIn);
         BufferedReader br = new BufferedReader(isr);
 	
-        String pythonMsg = null;
-        while ((pythonMsg = br.readLine()) != null)
-        System.out.println("The response is "+pythonMsg);
+        pythonMsg = br.readLine();
+        System.out.println("The response is "+ pythonMsg);
 
         // send response to spp client
         OutputStream outStream = connection.openOutputStream();
         PrintWriter pWriter = new PrintWriter(new OutputStreamWriter(outStream));
-        System.out.println("Sending response (" + RESPONSE + ")");
-        pWriter.write(RESPONSE + "\r\n");
+        System.out.println("Sending response (" + pythonMsg + ")");
+        pWriter.write(pythonMsg + "\r\n");
         pWriter.flush();
         pWriter.close();
         streamConnNotifier.close();
-        
     }
 
     public static void main(String[] args) throws IOException {
@@ -72,16 +68,13 @@ public class BluetoothServer {
         catch (IOException e) 
             {
             e.printStackTrace();
-            }
-        
+            }        
         LocalDevice localDevice = LocalDevice.getLocalDevice();
         System.out.println("Address: " + localDevice.getBluetoothAddress());
         System.out.println("Name: " + localDevice.getFriendlyName());
-    
         BluetoothServer sampleSPPServer = new BluetoothServer();
         while (true) {
             sampleSPPServer.startServer();
         }
-
     }
 }
