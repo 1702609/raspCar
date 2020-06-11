@@ -19,13 +19,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 public class BluetoothClientActivity extends Activity {
+
 	// Well known SPP UUID
 	public static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 	public static String MESSAGE = "";
@@ -34,10 +32,8 @@ public class BluetoothClientActivity extends Activity {
 	private TextView mLogTextView;
 	private StickyButton mStartButton;
 	private Button mClearTextButton;
-	private ScrollView mScrollView;
 	private BluetoothAdapter mAdapter;
 	private BluetoothDevice mDevice;
-	private EditText userInput;
 
 	@SuppressLint({ "NewApi", "InlinedApi" })
 	@Override
@@ -45,9 +41,7 @@ public class BluetoothClientActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		mLogTextView = findViewById(R.id.textview_output);
-		mScrollView = findViewById(R.id.scrollview_output);
 		mStartButton = findViewById(R.id.button_start_server);
-		userInput = findViewById(R.id.userInput);
 		mClearTextButton = findViewById(R.id.button_clear_text);
 
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
@@ -105,15 +99,10 @@ public class BluetoothClientActivity extends Activity {
 		((NoGuavaBaseApplication<BluetoothClientActivity>) getApplication()).attachActivity(this);
 	}
 
-	void appendMessage(final String newText) {
-		mLogTextView.append("\n" + newText);
-		mScrollView.post(new Runnable() {
-			@Override
-			public void run() {
-				mScrollView.fullScroll(View.FOCUS_DOWN);
-			}
-		});
-	}
+	void appendMessage(final String newText)
+		{
+		mLogTextView.setText(newText);
+		}
 
 	void unstickStartButton() {
 		appendMessage("");
@@ -122,11 +111,25 @@ public class BluetoothClientActivity extends Activity {
 
 	public void sendMessage(View v)
 		{
-		String command = userInput.getText().toString()+"\n"; // '\n' is needed because readline() works only if there is a next line
+		String command = null;
+		switch (v.getId())
+			{
+			case (R.id.up):
+				command = "f\n";
+				break;
+			case (R.id.bottom):
+				command = "b\n";
+				break;
+			case (R.id.left):
+				command = "l\n";
+				break;
+			case (R.id.right):
+				command = "r\n";
+				break;
+			}
 		Log.i("Send",command);
 		MESSAGE = command;
 		new BluetoothRequestTask(this, mDevice).execute(MESSAGE);
-		userInput.setText("");
 		}
 
 	public void startServer(View v) {

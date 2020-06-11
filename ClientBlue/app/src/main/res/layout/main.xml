@@ -19,44 +19,53 @@
         android:text="Clear log"
         android:onClick="clearLog"/>
 
-    <ScrollView
-        android:id="@+id/scrollview_output"
+    <TextView
+        android:id="@+id/textview_output"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/button_clear_text"
-        android:layout_marginTop="2dp">
+        android:layout_height="wrap_content"
+        android:padding="5dip"
+        android:layout_below="@id/button_start_server"
+        android:hint="Log will appear hear"/>
 
-        <TextView
-            android:id="@+id/textview_output"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="5dip" />
-    </ScrollView>
 
     <View android:id="@+id/strut"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_centerHorizontal="true"/>
 
-    <EditText
-        android:layout_margin="10dp"
-        android:id="@+id/userInput"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_alignRight="@id/strut"
-        android:layout_alignParentLeft="true"
-        android:hint="Enter command here"
-        android:layout_alignParentBottom="true"/>
+    <FrameLayout
+        android:layout_width="250dp"
+        android:layout_height="150dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true">
 
-    <Button
-        android:layout_margin="10dp"
-        android:id="@+id/submit_button"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/strut"
-        android:layout_alignParentRight="true"
-        android:text="Send"
-        android:layout_alignParentBottom="true"
-        android:onClick="sendMessage"/>
+        <Button
+            android:id="@+id/up"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center_horizontal"
+            android:onClick="sendMessage"/>
+
+        <Button
+            android:id="@+id/bottom"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="bottom|center_horizontal"
+            android:onClick="sendMessage"/>
+
+        <Button
+            android:id="@+id/left"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="left|bottom"
+            android:onClick="sendMessage"/>
+
+        <Button
+            android:id="@+id/right"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="right|bottom"
+            android:onClick="sendMessage"/>
+    </FrameLayout>
 
 </RelativeLayout>
