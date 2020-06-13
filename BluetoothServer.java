@@ -32,8 +32,6 @@ public class BluetoothServer {
         StreamConnection connection = streamConnNotifier.acceptAndOpen();
 
         RemoteDevice dev = RemoteDevice.getRemoteDevice(connection);
-        System.out.println("Remote device address: " + dev.getBluetoothAddress());
-        System.out.println("Remote device name: " + dev.getFriendlyName(true));
 
         // read string from spp client
         InputStream inStream = connection.openInputStream();
@@ -73,8 +71,16 @@ public class BluetoothServer {
         System.out.println("Address: " + localDevice.getBluetoothAddress());
         System.out.println("Name: " + localDevice.getFriendlyName());
         BluetoothServer sampleSPPServer = new BluetoothServer();
-        while (true) {
-            sampleSPPServer.startServer();
-        }
+        while (true) 
+                { //when pressing a button too fast
+                try 
+                    {
+                    sampleSPPServer.startServer();
+                    }
+        	catch(IOException e)
+                    {
+        		
+                    }
+                }
     }
 }
