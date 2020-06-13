@@ -18,15 +18,16 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class BluetoothClientActivity extends Activity {
 
 	// Well known SPP UUID
 	public static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-	public static String MESSAGE = "";
 	public static final int REQUEST_ENABLE_BT = 8675309;
 	private static final int REQUEST_CONNECT_DEVICE = 1;
 	private TextView mLogTextView;
@@ -34,6 +35,7 @@ public class BluetoothClientActivity extends Activity {
 	private Button mClearTextButton;
 	private BluetoothAdapter mAdapter;
 	private BluetoothDevice mDevice;
+	private Button goingF, goingB, goingL, goingR;
 
 	@SuppressLint({ "NewApi", "InlinedApi" })
 	@Override
@@ -43,14 +45,16 @@ public class BluetoothClientActivity extends Activity {
 		mLogTextView = findViewById(R.id.textview_output);
 		mStartButton = findViewById(R.id.button_start_server);
 		mClearTextButton = findViewById(R.id.button_clear_text);
-
+		goingF = findViewById(R.id.up);
+		goingB = findViewById(R.id.bottom);
+		goingL = findViewById(R.id.left);
+		goingR = findViewById(R.id.right);
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
 			mAdapter = BluetoothAdapter.getDefaultAdapter();
 		} else {
 			final BluetoothManager manager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
 			mAdapter = manager.getAdapter();
 		}
-
 		if (savedInstanceState != null) {
 			mLogTextView.setText(savedInstanceState.getString("log"));
 			mDevice = savedInstanceState.getParcelable("device");
@@ -111,26 +115,81 @@ public class BluetoothClientActivity extends Activity {
 
 	public void sendMessage(View v)
 		{
-		String command = null;
-		switch (v.getId())
+		goingF.setOnTouchListener(new View.OnTouchListener()
 			{
-			case (R.id.up):
-				command = "f\n";
-				break;
-			case (R.id.bottom):
-				command = "b\n";
-				break;
-			case (R.id.left):
-				command = "l\n";
-				break;
-			case (R.id.right):
-				command = "r\n";
-				break;
+			@Override
+			public boolean onTouch(View v, MotionEvent event)
+				{
+				switch(event.getAction())
+					{
+					case MotionEvent.ACTION_DOWN: //holding down
+						new BluetoothRequestTask(BluetoothClientActivity.this,mDevice).execute("f\n");
+						return true;
+					case MotionEvent.ACTION_UP: // released
+						new BluetoothRequestTask(BluetoothClientActivity.this,mDevice).execute("s\n");
+						return true;
+					}
+				return false;
+				};
+			});
+
+			goingB.setOnTouchListener(new View.OnTouchListener()
+			{
+				@Override
+				public boolean onTouch(View v, MotionEvent event)
+				{
+					switch(event.getAction())
+					{
+						case MotionEvent.ACTION_DOWN: //holding down
+							new BluetoothRequestTask(BluetoothClientActivity.this,mDevice).execute("b\n");
+							Toast.makeText(getApplicationContext(),"going forward", Toast.LENGTH_SHORT);
+							return true;
+						case MotionEvent.ACTION_UP: // released
+							new BluetoothRequestTask(BluetoothClientActivity.this,mDevice).execute("s\n");
+							return true;
+					}
+					return false;
+				};
+			});
+
+			goingL.setOnTouchListener(new View.OnTouchListener()
+			{
+				@Override
+				public boolean onTouch(View v, MotionEvent event)
+				{
+					switch(event.getAction())
+					{
+						case MotionEvent.ACTION_DOWN: //holding down
+							new BluetoothRequestTask(BluetoothClientActivity.this,mDevice).execute("l\n");
+							return true;
+						case MotionEvent.ACTION_UP: // released
+							new BluetoothRequestTask(BluetoothClientActivity.this,mDevice).execute("s\n");
+							return true;
+					}
+					return false;
+				};
+			});
+
+			goingR.setOnTouchListener(new View.OnTouchListener()
+			{
+				@Override
+				public boolean onTouch(View v, MotionEvent event)
+				{
+					switch(event.getAction())
+					{
+						case MotionEvent.ACTION_DOWN: //holding down
+							new BluetoothRequestTask(BluetoothClientActivity.this,mDevice).execute("r\n");
+							return true;
+						case MotionEvent.ACTION_UP: // released
+							new BluetoothRequestTask(BluetoothClientActivity.this,mDevice).execute("s\n");
+							return true;
+					}
+					return false;
+				};
+			});
 			}
-		Log.i("Send",command);
-		MESSAGE = command;
-		new BluetoothRequestTask(this, mDevice).execute(MESSAGE);
-		}
+
+
 
 	public void startServer(View v) {
 		if (mAdapter == null) {
@@ -144,8 +203,9 @@ public class BluetoothClientActivity extends Activity {
 			if (mDevice == null) {
 				Intent serverIntent = new Intent(BluetoothClientActivity.this, DeviceListActivity.class);
 				startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE); //fetch registered device and get result
-			} else { //selected device
-				new BluetoothRequestTask(BluetoothClientActivity.this, mDevice).execute(MESSAGE);
+			} else
+				{ //selected device
+				new BluetoothRequestTask(this,mDevice);
 			}
 		}
 	}
@@ -160,10 +220,11 @@ public class BluetoothClientActivity extends Activity {
 		private OutputStream mOutStream;
 		private InputStream mInStream;
 
-		public BluetoothRequestTask(BluetoothClientActivity activity, BluetoothDevice device) {
+		public BluetoothRequestTask(BluetoothClientActivity activity, BluetoothDevice device)
+			{
 			super(activity);
 			mDevice = device;
-		}
+			}
 
 		@Override
 		protected String doInBackground(String... params) {
