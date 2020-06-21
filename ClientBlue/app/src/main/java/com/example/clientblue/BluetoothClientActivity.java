@@ -17,7 +17,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -59,6 +58,8 @@ public class BluetoothClientActivity extends Activity {
 			mLogTextView.setText(savedInstanceState.getString("log"));
 			mDevice = savedInstanceState.getParcelable("device");
 		}
+		goingF.setOnTouchListener();
+
 	}
 
 	@Override
@@ -115,7 +116,7 @@ public class BluetoothClientActivity extends Activity {
 
 	public void sendMessage(View v)
 		{
-		goingF.setOnTouchListener(new View.OnTouchListener()
+		v.getId().setOnTouchListener(new View.OnTouchListener()
 			{
 			@Override
 			public boolean onTouch(View v, MotionEvent event)

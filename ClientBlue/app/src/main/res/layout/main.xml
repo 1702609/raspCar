@@ -44,29 +44,28 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_gravity="center_horizontal"
-            android:onClick="sendMessage"/>
+            />
 
         <Button
             android:id="@+id/bottom"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_gravity="bottom|center_horizontal"
-            android:focusableInTouchMode="false"
-            android:onClick="sendMessage"/>
+            />
 
         <Button
             android:id="@+id/left"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_gravity="left|bottom"
-            android:onClick="sendMessage"/>
+           />
 
         <Button
             android:id="@+id/right"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_gravity="right|bottom"
-            android:onClick="sendMessage"/>
+            />
     </FrameLayout>
 
 </RelativeLayout>
