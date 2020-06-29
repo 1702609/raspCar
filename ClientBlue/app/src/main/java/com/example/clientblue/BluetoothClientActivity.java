@@ -58,8 +58,74 @@ public class BluetoothClientActivity extends Activity {
 			mLogTextView.setText(savedInstanceState.getString("log"));
 			mDevice = savedInstanceState.getParcelable("device");
 		}
-		goingF.setOnTouchListener();
+		goingF.setOnTouchListener(new View.OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event)
+				{
+				switch(event.getAction())
+				{
+					case MotionEvent.ACTION_DOWN: //holding down
+						new BluetoothRequestTask(BluetoothClientActivity.this,mDevice).execute("f\n");
+						return true;
+					case MotionEvent.ACTION_UP: // released
+						new BluetoothRequestTask(BluetoothClientActivity.this,mDevice).execute("s\n");
+						return true;
+				}
+				return false;
+				}
+		});
 
+		goingB.setOnTouchListener(new View.OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event)
+				{
+				switch(event.getAction())
+				{
+					case MotionEvent.ACTION_DOWN: //holding down
+						new BluetoothRequestTask(BluetoothClientActivity.this,mDevice).execute("b\n");
+						Toast.makeText(getApplicationContext(),"going forward", Toast.LENGTH_SHORT);
+						return true;
+					case MotionEvent.ACTION_UP: // released
+						new BluetoothRequestTask(BluetoothClientActivity.this,mDevice).execute("s\n");
+						return true;
+				}
+				return false;
+				}
+		});
+
+		goingL.setOnTouchListener(new View.OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event)
+				{
+				switch(event.getAction())
+				{
+					case MotionEvent.ACTION_DOWN: //holding down
+						new BluetoothRequestTask(BluetoothClientActivity.this,mDevice).execute("l\n");
+						return true;
+					case MotionEvent.ACTION_UP: // released
+						new BluetoothRequestTask(BluetoothClientActivity.this,mDevice).execute("s\n");
+						return true;
+				}
+				return false;
+				}
+		});
+
+		goingR.setOnTouchListener(new View.OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event)
+				{
+				switch(event.getAction())
+				{
+					case MotionEvent.ACTION_DOWN: //holding down
+						new BluetoothRequestTask(BluetoothClientActivity.this,mDevice).execute("r\n");
+						return true;
+					case MotionEvent.ACTION_UP: // released
+						new BluetoothRequestTask(BluetoothClientActivity.this,mDevice).execute("s\n");
+						return true;
+				}
+				return false;
+				}
+		});
 	}
 
 	@Override
@@ -113,84 +179,6 @@ public class BluetoothClientActivity extends Activity {
 		appendMessage("");
 		mStartButton.unstick();
 	}
-
-	public void sendMessage(View v)
-		{
-		v.getId().setOnTouchListener(new View.OnTouchListener()
-			{
-			@Override
-			public boolean onTouch(View v, MotionEvent event)
-				{
-				switch(event.getAction())
-					{
-					case MotionEvent.ACTION_DOWN: //holding down
-						new BluetoothRequestTask(BluetoothClientActivity.this,mDevice).execute("f\n");
-						return true;
-					case MotionEvent.ACTION_UP: // released
-						new BluetoothRequestTask(BluetoothClientActivity.this,mDevice).execute("s\n");
-						return true;
-					}
-				return false;
-				};
-			});
-
-			goingB.setOnTouchListener(new View.OnTouchListener()
-			{
-				@Override
-				public boolean onTouch(View v, MotionEvent event)
-				{
-					switch(event.getAction())
-					{
-						case MotionEvent.ACTION_DOWN: //holding down
-							new BluetoothRequestTask(BluetoothClientActivity.this,mDevice).execute("b\n");
-							Toast.makeText(getApplicationContext(),"going forward", Toast.LENGTH_SHORT);
-							return true;
-						case MotionEvent.ACTION_UP: // released
-							new BluetoothRequestTask(BluetoothClientActivity.this,mDevice).execute("s\n");
-							return true;
-					}
-					return false;
-				};
-			});
-
-			goingL.setOnTouchListener(new View.OnTouchListener()
-			{
-				@Override
-				public boolean onTouch(View v, MotionEvent event)
-				{
-					switch(event.getAction())
-					{
-						case MotionEvent.ACTION_DOWN: //holding down
-							new BluetoothRequestTask(BluetoothClientActivity.this,mDevice).execute("l\n");
-							return true;
-						case MotionEvent.ACTION_UP: // released
-							new BluetoothRequestTask(BluetoothClientActivity.this,mDevice).execute("s\n");
-							return true;
-					}
-					return false;
-				};
-			});
-
-			goingR.setOnTouchListener(new View.OnTouchListener()
-			{
-				@Override
-				public boolean onTouch(View v, MotionEvent event)
-				{
-					switch(event.getAction())
-					{
-						case MotionEvent.ACTION_DOWN: //holding down
-							new BluetoothRequestTask(BluetoothClientActivity.this,mDevice).execute("r\n");
-							return true;
-						case MotionEvent.ACTION_UP: // released
-							new BluetoothRequestTask(BluetoothClientActivity.this,mDevice).execute("s\n");
-							return true;
-					}
-					return false;
-				};
-			});
-			}
-
-
 
 	public void startServer(View v) {
 		if (mAdapter == null) {
