@@ -35,6 +35,7 @@ public class BluetoothClientActivity extends Activity {
 	private BluetoothAdapter mAdapter;
 	private BluetoothDevice mDevice;
 	private Button goingF, goingB, goingL, goingR;
+    private BluetoothSocket mSocket;
 
 	@SuppressLint({ "NewApi", "InlinedApi" })
 	@Override
@@ -65,7 +66,8 @@ public class BluetoothClientActivity extends Activity {
 				switch(event.getAction())
 				{
 					case MotionEvent.ACTION_DOWN: //holding down
-						new BluetoothRequestTask(BluetoothClientActivity.this,mDevice).execute("f\n");
+						Toast.makeText(getApplicationContext(),"Forward has been pressed",Toast.LENGTH_SHORT).show();
+                        new BluetoothRequestTask(BluetoothClientActivity.this,mDevice).execute("f\n");
 						return true;
 					case MotionEvent.ACTION_UP: // released
 						new BluetoothRequestTask(BluetoothClientActivity.this,mDevice).execute("s\n");
@@ -148,6 +150,13 @@ public class BluetoothClientActivity extends Activity {
 				// Get the BluetoothDevice object
 				mDevice = mAdapter.getRemoteDevice(address);
 				// Attempt to connect to the device
+                try {
+                    mSocket = mDevice.createInsecureRfcommSocketToServiceRecord(MY_UUID);
+                    mSocket.connect();
+                    new BluetoothRequestTask(BluetoothClientActivity.this,mDevice).execute("Hello\n");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 			}
 			break;
 		}
@@ -205,7 +214,6 @@ public class BluetoothClientActivity extends Activity {
 
 	private class BluetoothRequestTask extends AsyncActivityTask<BluetoothClientActivity, String, String, String> {
 		private BluetoothDevice mDevice;
-		private BluetoothSocket mSocket;
 		private OutputStream mOutStream;
 		private InputStream mInStream;
 
@@ -217,26 +225,7 @@ public class BluetoothClientActivity extends Activity {
 
 		@Override
 		protected String doInBackground(String... params) {
-			publishProgress("Attempting socket creation...");
-			try {
-				mSocket = mDevice.createRfcommSocketToServiceRecord(BluetoothClientActivity.MY_UUID);
-				publishProgress("Socket created! Attempting socket connection...");
-			} catch (IOException e) {
-				e.printStackTrace();
-				publishProgress("ERROR: Socket creation failed.");
-				return null;
-			}
 
-			mAdapter.cancelDiscovery();
-			try {
-				mSocket.connect();
-			} catch (IOException e) {
-				e.printStackTrace();
-				publishProgress("ERROR: Socket connection failed. Ensure that the server is up and try again.");
-				return null;
-			}
-
-			publishProgress("Attempting to send data to server. Creating output stream...");
 			String message = params[0];
 			if (message == null) {
 				message = "No message provided!";
@@ -309,14 +298,8 @@ public class BluetoothClientActivity extends Activity {
 			try {
 				if (mOutStream != null) {
 					mOutStream.flush();
-					mOutStream.close();
 				}
-				if (mInStream != null) {
-					mInStream.close();
-				}
-				if (mSocket != null) {
-					mSocket.close();
-				}
+
 			} catch (IOException e) {
 				e.printStackTrace();
 				publishProgress("ERROR: Closing something failed.");
