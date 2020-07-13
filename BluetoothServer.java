@@ -18,48 +18,37 @@ public class BluetoothServer {
     private static String pythonMsg = null;
 
     // start server
-    private void startServer() throws IOException {
-        // Create a UUID for SPP
-        UUID uuid = new UUID("0000110100001000800000805F9B34FB", false);
-        // Create the servicve url
-        String connectionString = "btspp://localhost:" + uuid + ";name=Sample SPP Server";
-
-        // open server url
-        StreamConnectionNotifier streamConnNotifier = (StreamConnectionNotifier) Connector.open(connectionString);
-
-        // Wait for client connection
-        System.out.println("\nServer Started. Waiting for clients to connect...");
-        StreamConnection connection = streamConnNotifier.acceptAndOpen();
-
-        RemoteDevice dev = RemoteDevice.getRemoteDevice(connection);
-
-        // read string from spp client
-        InputStream inStream = connection.openInputStream();
+    private void startServer(StreamConnection socket) throws IOException {
+       
+        InputStream inStream = socket.openInputStream();
         BufferedReader bReader = new BufferedReader(new InputStreamReader(inStream));
-        lineRead = bReader.readLine();
-        System.out.println("Message from mobile device: "+lineRead);
+        OutputStream outStream = socket.openOutputStream();
         
-        Process p = Runtime.getRuntime().exec("python motor.py " +lineRead);
-        InputStream stdIn = p.getInputStream();
-        InputStreamReader isr = new InputStreamReader(stdIn);
-        BufferedReader br = new BufferedReader(isr);
+        while (true)
+	        {
+	        lineRead = bReader.readLine();
+	        System.out.println("Message from mobile device: "+lineRead);
+	        
+	        Process p = Runtime.getRuntime().exec("python motor.py " +lineRead);
+	        InputStream stdIn = p.getInputStream();
+	        InputStreamReader isr = new InputStreamReader(stdIn);
+	        BufferedReader br = new BufferedReader(isr);
+		
+	        pythonMsg = br.readLine();
+	        System.out.println("The response is "+ pythonMsg);
 	
-        pythonMsg = br.readLine();
-        System.out.println("The response is "+ pythonMsg);
-
-        // send response to spp client
-        OutputStream outStream = connection.openOutputStream();
-        PrintWriter pWriter = new PrintWriter(new OutputStreamWriter(outStream));
-        System.out.println("Sending response (" + pythonMsg + ")");
-        pWriter.write(pythonMsg + "\r\n");
-        pWriter.flush();
-        pWriter.close();
-        streamConnNotifier.close();
+	        // send response to spp client
+	        PrintWriter pWriter = new PrintWriter(new OutputStreamWriter(outStream));
+	        System.out.println("Sending response (" + pythonMsg + ")");
+	        pWriter.write(pythonMsg + "\r\n");
+	        pWriter.flush();
+	        outStream.flush();
+	        }
     }
 
     public static void main(String[] args) throws IOException {
-        // display local device address and name
-        try 
+        //give server access to bluetooth driver 
+    	try 
             {
             Runtime.getRuntime().exec("sudo chmod 777 /var/run/sdp");
             } 
@@ -67,20 +56,23 @@ public class BluetoothServer {
             {
             e.printStackTrace();
             }        
-        LocalDevice localDevice = LocalDevice.getLocalDevice();
+        
+    	//Prepare server
+    	LocalDevice localDevice = LocalDevice.getLocalDevice();
         System.out.println("Address: " + localDevice.getBluetoothAddress());
         System.out.println("Name: " + localDevice.getFriendlyName());
-        BluetoothServer sampleSPPServer = new BluetoothServer();
-        while (true) 
-                { //when pressing a button too fast
-                try 
-                    {
-                    sampleSPPServer.startServer();
-                    }
-        	catch(IOException e)
-                    {
-        		
-                    }
-                }
+        
+        //Prepare client 
+        UUID uuid = new UUID("0000110100001000800000805F9B34FB", false);
+        String connectionString = "btspp://localhost:" + uuid + ";name=Sample SPP Server";
+        StreamConnectionNotifier streamConnNotifier = (StreamConnectionNotifier) Connector.open(connectionString);
+        System.out.println("\nServer Started. Waiting for clients to connect...");
+        StreamConnection socket = streamConnNotifier.acceptAndOpen();
+        System.out.println("\nDevice has been connected");
+        
+        BluetoothServer sampleSPPServer = new BluetoothServer();       
+        sampleSPPServer.startServer(socket);
+                    
+      
     }
 }
